@@ -15,7 +15,8 @@
 import json
 from enum import Enum, auto
 from typing import Tuple
-
+from my_rolling_list import  MyRollingList
+import indicator_util
 from six.moves import urllib
 
 url = "https://data.messari.io/api/v1/assets/eth/metrics?fields=id,symbol,market_data/price_usd," \
@@ -77,6 +78,12 @@ def get_current_metrics() -> Tuple[float, float, float]:
     usd_volume = market_data["real_volume_last_24_hours"]
     usd_marketcap = data["marketcap"]["current_marketcap_usd"]
     return usd_price, usd_volume, usd_marketcap
+
+
+def get_average(number: int, my_rolling_average: MyRollingList) -> [int, float]:
+    if number > my_rolling_average.size():
+        return -1
+    return indicator_util.calculate_simple_moving_average(my_rolling_average.get_most_recents(number))
 
 
 def get_moving_average_string(ma_type: MovingAverageType) -> str:

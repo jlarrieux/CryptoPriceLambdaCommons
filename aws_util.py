@@ -28,7 +28,7 @@ ssm = boto3.client('ssm', region_name=region)
 table_name = 'eth-price-hourly-nosql-db'
 parameter_key = '0'
 s3_resource = boto3.resource('s3')
-hour_to_save_daily = 4
+
 
 
 def get_last_price() -> [None, float]:
@@ -47,11 +47,11 @@ def _get_from_dynamo() -> [None, str]:
         TableName=table_name, Key={'id': {'N': parameter_key}})
 
 
-def save_price(val: float) -> MyRollingList:
+def save_price(val: float, is_time_to_save: bool) -> MyRollingList:
     _update_dynamo_table(val, "last_price")
     round_val = float(Decimal(val).quantize(Decimal("0.01")))
     rolling_average = load_from_s3()
-    if time_to_save():
+    if is_time_to_save:
         if rolling_average is None:
             rolling_average = MyRollingList(500)
         rolling_average.add(round_val)
@@ -69,8 +69,6 @@ def _update_dynamo_table(val: float, item: str) -> None:
     dynamodb.update_item(TableName=table_name, Key={'id': {
         'N': parameter_key}}, ExpressionAttributeNames={"#name": item}, UpdateExpression=f"set #name = :v",
                          ExpressionAttributeValues={':v': {'N': str(val)}})
-    print(f"about to save: with hour to save: {hour_to_save_daily} vs current hour: {datetime.datetime.now().hour} and "
-          f"val {val}")
 
 
 def get_parameter(parameter_name):
@@ -88,7 +86,3 @@ def load_from_s3(bucket: str, s3_key: str) -> [MyRollingList, None]:
     except Exception as error:
         if isinstance(error, s3_resource.meta.client.exceptions.NoSuchKey):
             return None
-
-
-def time_to_save() -> bool:
-    return datetime.datetime.now().hour == hour_to_save_daily
