@@ -1,0 +1,3 @@
+echo creating archive...
+powershell .\compress.ps1
+aws lambda publish-layer-version --layer-name CryptoPriceLambdaCommons --compatible-runtimes "python3.6" "python3.7" "python3.8" --zip-file "fileb://%CD%\CryptoPriceLambdaCommons.zip"
