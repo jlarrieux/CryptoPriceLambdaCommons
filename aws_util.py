@@ -30,7 +30,6 @@ parameter_key = '0'
 s3_resource = boto3.resource('s3')
 
 
-
 def get_last_price() -> [None, float]:
     json_string = _get_from_dynamo()
     return None if json_string is None else float(json_string['Item']['last_price']['N'])
@@ -47,7 +46,7 @@ def _get_from_dynamo() -> [None, str]:
         TableName=table_name, Key={'id': {'N': parameter_key}})
 
 
-def save_price(val: float, is_time_to_save: bool) -> MyRollingList:
+def save_price(val: float, is_time_to_save: bool, key: str, bucket: str) -> MyRollingList:
     _update_dynamo_table(val, "last_price")
     round_val = float(Decimal(val).quantize(Decimal("0.01")))
     rolling_average = load_from_s3()
@@ -55,7 +54,7 @@ def save_price(val: float, is_time_to_save: bool) -> MyRollingList:
         if rolling_average is None:
             rolling_average = MyRollingList(500)
         rolling_average.add(round_val)
-        save_to_s3(rolling_average)
+        save_to_s3(rolling_average, key=key, bucket=bucket)
         ma_10 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(10))
         ma_50 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(50))
         ma_200 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(200))
