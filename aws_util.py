@@ -49,12 +49,12 @@ def _get_from_dynamo() -> [None, str]:
 def save_price(val: float, is_time_to_save: bool, key: str, bucket: str) -> MyRollingList:
     _update_dynamo_table(val, "last_price")
     round_val = float(Decimal(val).quantize(Decimal("0.01")))
-    rolling_average = load_from_s3()
+    rolling_average = _load_from_s3(bucket, key)
     if is_time_to_save:
         if rolling_average is None:
             rolling_average = MyRollingList(500)
         rolling_average.add(round_val)
-        save_to_s3(rolling_average, key=key, bucket=bucket)
+        _save_to_s3(rolling_average, key=key, bucket=bucket)
         ma_10 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(10))
         ma_50 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(50))
         ma_200 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(200))
@@ -74,12 +74,12 @@ def get_parameter(parameter_name):
     return ssm.get_parameter(Name=parameter_name, WithDecryption=True)['Parameter']['Value']
 
 
-def save_to_s3(my_rolling_list: MyRollingList, key: str, bucket: str) -> None:
+def _save_to_s3(my_rolling_list: MyRollingList, bucket: str, key: str) -> None:
     pickle_byte_obj = pickle.dumps(my_rolling_list)
     s3_resource.Object(bucket, key).put(Body=pickle_byte_obj)
 
 
-def load_from_s3(bucket: str, s3_key: str) -> [MyRollingList, None]:
+def _load_from_s3(bucket: str, s3_key: str) -> [MyRollingList, None]:
     try:
         return pickle.loads(s3_resource.Object(bucket, s3_key).get()['Body'].read())
     except Exception as error:
