@@ -2,6 +2,7 @@
 [![Apache2 license](https://img.shields.io/badge/license-Apache%202-blue)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Supporting Ethereum](https://img.shields.io/badge/Supporting-Ethereum-black)](https://ethereum.org/en/)
 [![Supporting Defi](https://img.shields.io/badge/Supporting-Defi-yellow)](https://docs.ethhub.io/built-on-ethereum/open-finance/what-is-open-finance/)
+![Python application](https://github.com/jlarrieux/CryptoPriceLambdaCommons/workflows/Python%20application/badge.svg)
 
 
 # CryptoPriceLambdaCommons
