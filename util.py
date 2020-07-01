@@ -20,7 +20,7 @@ import indicator_util
 from six.moves import urllib
 
 url = "https://data.messari.io/api/v1/assets/eth/metrics?fields=id,symbol,market_data/price_usd," \
-      "market_data/real_volume_last_24_hours,marketcap/current_marketcap_usd "
+      "market_data/real_volume_last_24_hours,market_data/volume_last_24_hours,marketcap/current_marketcap_usd "
 
 
 class MovingAverageType(Enum):
