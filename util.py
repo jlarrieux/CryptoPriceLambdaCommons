@@ -75,7 +75,7 @@ def get_current_metrics() -> Tuple[float, float, float]:
     market_data = data["market_data"]
 
     usd_price = market_data["price_usd"]
-    usd_volume = market_data["real_volume_last_24_hours"]
+    usd_volume = market_data["volume_last_24_hours"]
     usd_marketcap = data["marketcap"]["current_marketcap_usd"]
     return usd_price, usd_volume, usd_marketcap
 
