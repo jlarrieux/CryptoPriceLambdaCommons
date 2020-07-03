@@ -21,6 +21,7 @@ from six.moves import urllib
 
 url = "https://data.messari.io/api/v1/assets/eth/metrics?fields=id,symbol,market_data/price_usd," \
       "market_data/real_volume_last_24_hours,market_data/volume_last_24_hours,marketcap/current_marketcap_usd "
+my_url = "https://crypto.jlarrieux.com/metric/data?asset={}"
 
 
 class MovingAverageType(Enum):
@@ -69,14 +70,12 @@ def get_percent_delta(current_price: float, last_price: float) -> float:
     return delta
 
 
-def get_current_metrics() -> Tuple[float, float, float]:
-    eth = json.loads(urllib.request.urlopen(url).read().decode())
-    data = eth["data"]
-    market_data = data["market_data"]
+def get_current_metrics(asset: str) -> Tuple[float, float, float]:
+    value = json.loads(urllib.request.urlopen(my_url.format(asset)).read().decode())
 
-    usd_price = market_data["price_usd"]
-    usd_volume = market_data["volume_last_24_hours"]
-    usd_marketcap = data["marketcap"]["current_marketcap_usd"]
+    usd_price = value["usd_price"]
+    usd_volume = value["volume_last_24_hours"]
+    usd_marketcap = value["current_marketcap_usd"]
     return usd_price, usd_volume, usd_marketcap
 
 
@@ -99,3 +98,7 @@ def get_moving_average_number(ma_type: MovingAverageType) -> int:
     elif ma_type == MovingAverageType.TWO_HUNDRED:
         num = 200
     return num
+
+
+if __name__ == '__main__':
+    print(get_current_metrics("eth"))

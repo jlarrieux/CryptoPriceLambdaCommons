@@ -19,8 +19,10 @@ import boto3
 import util
 import csv
 import pickle
-from MyRollingList import MyRollingList
+from my_rolling_list import MyRollingList
 from my_rolling_list import MyRollingList as MY
+from six.moves import  urllib
+import json
 
 
 decimal.getcontext().prec = 7
@@ -30,11 +32,11 @@ parameter_key = '0'
 table_name = 'eth-price-hourly-nosql-db'
 s3_resource = boto3.resource('s3')
 bucket = 'com.jlarrieux.lambda'
-key = 'prices.pkl'
+key = 'ethereum_daily_closing_prices.pkl'
 
 
 def main() -> None:
-    my_rolling_list = aws_util._load_from_s3()
+    my_rolling_list = aws_util._load_from_s3(bucket=bucket, s3_key=key)
     print(my_rolling_list)
     # x = 10
     # print(f"last price: {aws_util.get_last_price()}")
@@ -89,6 +91,10 @@ def load_and_process() -> None:
     print(max)
 
 
+def price(asset):
+    val = json.loads(urllib.request.urlopen(f"https://crypto.jlarrieux.com/metric/data?asset={asset}").read().decode())
+    print(val)
+
 
 if __name__ == '__main__':
-    main()
+    price("eth")
