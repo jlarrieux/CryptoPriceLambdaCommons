@@ -37,36 +37,25 @@ key = 'ethereum_daily_closing_prices.pkl'
 
 def main() -> None:
     my_rolling_list = aws_util._load_from_s3(bucket=bucket, s3_key=key)
-    print(my_rolling_list)
+    # print(my_rolling_list)
     # x = 10
     # print(f"last price: {aws_util.get_last_price()}")
     # recents = my_rolling_list.get_most_recents(x)
     # print(f"with size:{my_rolling_list.size()}\n{x} most recent: {recents}")
     # print(indicator_util.calculate_simple_moving_average(recents))
-    print_averages(my_rolling_list, 3)
-    print_averages(my_rolling_list, 7)
-    print_averages(my_rolling_list, 10)
-    print_averages(my_rolling_list, 15)
-    print_averages(my_rolling_list, 30)
-    print_averages(my_rolling_list, 50)
-    print_averages(my_rolling_list, 100)
-    print_averages(my_rolling_list, 200)
-    print_averages(my_rolling_list, 500)
-    print_averages(my_rolling_list, 1000)
-    print_averages(my_rolling_list, 1500)
-    # print(aws_util.get_last_moving_average(util.MovingAverageType.FIFTY))
-    # current_size = my_rolling_list.size()
-    # ten_day_ma = -1
-    # fifty_day_ma = -1
-    # two_hundred_day_ma = -1
-    # if current_size >= 10:
-    #     ten_day_ma = indicator_util.calculate_simple_moving_average(my_rolling_list.get_most_recents(10))
-    # if current_size >= 50:
-    #     fifty_day_ma = indicator_util.calculate_simple_moving_average(my_rolling_list.get_most_recents(50))
-    # if current_size >= 200:
-    #     two_hundred_day_ma = indicator_util.calculate_simple_moving_average(my_rolling_list.get_most_recents(200))
-    #
-    # print(f"10 day ma: {ten_day_ma}\t50 day ma: {fifty_day_ma}\t200 day ma: {two_hundred_day_ma}")
+    # print_averages(my_rolling_list, 3)
+    # print_averages(my_rolling_list, 7)
+    # print_averages(my_rolling_list, 10)
+    # print_averages(my_rolling_list, 15)
+    # print_averages(my_rolling_list, 30)
+    # print_averages(my_rolling_list, 50)
+    # print_averages(my_rolling_list, 100)
+    # print_averages(my_rolling_list, 200)
+    # print_averages(my_rolling_list, 500)
+    # print_averages(my_rolling_list, 1000)
+    # print_averages(my_rolling_list, 1500)
+    print(my_rolling_list.size())
+    print(my_rolling_list.get_most_recents(14))
 
 def print_averages(my_rolling_list:MyRollingList, value: int) ->None:
     print(f"The last {value} day averages were: {util.format_money_to_string(indicator_util.calculate_simple_moving_average(my_rolling_list.get_most_recents(value)))}")
@@ -97,4 +86,4 @@ def price(asset):
 
 
 if __name__ == '__main__':
-    price("eth")
+    main()

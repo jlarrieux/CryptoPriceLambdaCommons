@@ -26,6 +26,8 @@ my_url = "https://crypto.jlarrieux.com/metric/data?asset={}"
 
 class MovingAverageType(Enum):
     TEN = auto()
+    TWELVE = auto()
+    FIFTEEN = auto()
     FIFTY = auto()
     TWO_HUNDRED = auto()
 
@@ -93,6 +95,10 @@ def get_moving_average_number(ma_type: MovingAverageType) -> int:
     num = 0
     if ma_type == MovingAverageType.TEN:
         num = 10
+    elif ma_type == MovingAverageType.TWELVE:
+        num = 12
+    elif ma_type == MovingAverageType.FIFTEEN:
+        num = 15
     elif ma_type == MovingAverageType.FIFTY:
         num = 50
     elif ma_type == MovingAverageType.TWO_HUNDRED:
