@@ -55,6 +55,6 @@ class MyRollingList:
 
     def get_most_recents(self, number) -> [List[float], int]:
         if number > self.size():
-            logger.error(f"Attemping to get {number} of values with current size of {self.size()}")
+            logger.error(f"Attempting to get {number} of values with current size of {self.size()}")
             return -1
         return self[:number]

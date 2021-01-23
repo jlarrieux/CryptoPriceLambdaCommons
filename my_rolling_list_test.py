@@ -40,7 +40,7 @@ class MyRollingListTest(unittest.TestCase):
         my.add(15)
         with self.assertLogs(level='INFO') as cm:
             self.assertEqual(-1, my.get_most_recents(2))
-            self.assertIn("ERROR:root:Attemping to get 2 of values with current size of 1", cm.output)
+            self.assertIn("ERROR:root:Attempting to get 2 of values with current size of 1", cm.output)
 
     def test_get_all(self):
         my = MyRollingList()

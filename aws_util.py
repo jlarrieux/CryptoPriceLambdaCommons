@@ -54,7 +54,7 @@ def save_price(val: float, is_time_to_save: bool, key: str, bucket: str) -> MyRo
         if rolling_average is None:
             rolling_average = MyRollingList(500)
         rolling_average.add(round_val)
-        _save_to_s3(rolling_average, key=key, bucket=bucket)
+        save_to_s3(bucket, key, rolling_average)
         ma_10 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(10))
         ma_50 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(50))
         ma_200 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(200))
@@ -74,14 +74,18 @@ def get_parameter(parameter_name):
     return ssm.get_parameter(Name=parameter_name, WithDecryption=True)['Parameter']['Value']
 
 
-def _save_to_s3(my_rolling_list: MyRollingList, bucket: str, key: str) -> None:
-    pickle_byte_obj = pickle.dumps(my_rolling_list)
+def _load_from_s3(bucket: str, s3_key: str) -> [MyRollingList, None]:
+    return load_from_s3(bucket, s3_key)
+
+
+def save_to_s3(bucket: str, key: str, obj: object) -> None:
+    pickle_byte_obj = pickle.dumps(obj)
     s3_resource.Object(bucket, key).put(Body=pickle_byte_obj)
 
 
-def _load_from_s3(bucket: str, s3_key: str) -> [MyRollingList, None]:
+def load_from_s3(bucket: str, key: str):
     try:
-        return pickle.loads(s3_resource.Object(bucket, s3_key).get()['Body'].read())
+        return pickle.loads(s3_resource.Object(bucket, key).get()['Body'].read())
     except Exception as error:
         if isinstance(error, s3_resource.meta.client.exceptions.NoSuchKey):
             return None

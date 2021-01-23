@@ -15,12 +15,11 @@
 import json
 from enum import Enum, auto
 from typing import Tuple
-from my_rolling_list import  MyRollingList
+from my_rolling_list import MyRollingList
 import indicator_util
 from six.moves import urllib
+import ssl
 
-url = "https://data.messari.io/api/v1/assets/eth/metrics?fields=id,symbol,market_data/price_usd," \
-      "market_data/real_volume_last_24_hours,market_data/volume_last_24_hours,marketcap/current_marketcap_usd "
 my_url = "https://crypto.jlarrieux.com/metric/data?asset={}"
 
 
@@ -33,8 +32,9 @@ class MovingAverageType(Enum):
 
 
 def format_number(value: float, dec=2) -> str:
-    formating_string = "{:,." + f'{dec}' + "f}"
-    return formating_string.format(value)
+    formatting_string = "{:,." + f'{dec}' + "f}"
+    print(f"value: {value}")
+    return formatting_string.format(float(value))
 
 
 def get_whole_number_count(value: [float, int]) -> int:
@@ -47,19 +47,19 @@ def get_whole_number_count(value: [float, int]) -> int:
 
 
 def format_money_to_string(value: float) -> str:
-    whole_numer_count = get_whole_number_count(value)
-    my_value = value
+    whole_number_count = get_whole_number_count(value)
+    my_value = float(value)
     suffix = ""
-    if whole_numer_count > 6:
+    if whole_number_count > 6:
         rounded_value = round(my_value)
         str_value = str(rounded_value)
-        index = whole_numer_count - 6
+        index = whole_number_count - 6
         suffix = "M"
-        if whole_numer_count > 9:
-            index = whole_numer_count - 9
+        if whole_number_count > 9:
+            index = whole_number_count - 9
             suffix = "B"
-        if whole_numer_count > 12:
-            index = whole_numer_count - 12
+        if whole_number_count > 12:
+            index = whole_number_count - 12
             suffix = "T"
         my_value = float(str_value[:index] + "." + str_value[index:])
     return f"${format_number(my_value)}{suffix}"
@@ -73,12 +73,13 @@ def get_percent_delta(current_price: float, last_price: float) -> float:
 
 
 def get_current_metrics(asset: str) -> Tuple[float, float, float]:
-    value = json.loads(urllib.request.urlopen(my_url.format(asset)).read().decode())
+    context = ssl._create_unverified_context()
+    value = json.loads(urllib.request.urlopen(my_url.format(asset), context=context).read().decode())
 
     usd_price = value["usd_price"]
     usd_volume = value["volume_last_24_hours"]
     usd_marketcap = value["current_marketcap_usd"]
-    return usd_price, usd_volume, usd_marketcap
+    return float(usd_price), float(usd_volume), float(usd_marketcap)
 
 
 def get_average(number: int, my_rolling_average: MyRollingList) -> [int, float]:
