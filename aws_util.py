@@ -37,8 +37,14 @@ def get_last_price() -> [None, float]:
 
 def get_last_moving_average(ma_type: MovingAverageType):
     json_string = _get_from_dynamo()
-    ma_string = f"{str(util.get_moving_average_number(ma_type))}_day_ma"
-    return None if json_string is None else json_string['Item'][ma_string]['N']
+    ma_string = f"{str(ma_type.value)}_day_ma"
+    if json_string is None:
+        return None
+    try:
+        json_string['Item'][ma_string]
+    except KeyError:
+        return None
+    return json_string['Item'][ma_string]['N']
 
 
 def _get_from_dynamo() -> [None, str]:
@@ -47,7 +53,7 @@ def _get_from_dynamo() -> [None, str]:
 
 
 def save_price(val: float, is_time_to_save: bool, key: str, bucket: str) -> MyRollingList:
-    _update_dynamo_table(val, "last_price")
+    update_dynamo_table(val, "last_price")
     round_val = float(Decimal(val).quantize(Decimal("0.01")))
     rolling_average = _load_from_s3(bucket, key)
     if is_time_to_save:
@@ -56,15 +62,17 @@ def save_price(val: float, is_time_to_save: bool, key: str, bucket: str) -> MyRo
         rolling_average.add(round_val)
         save_to_s3(bucket, key, rolling_average)
         ma_10 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(10))
+        ma_12 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(12))
         ma_50 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(50))
         ma_200 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(200))
-        _update_dynamo_table(ma_10, "10_day_ma")
-        _update_dynamo_table(ma_50, "50_day_ma")
-        _update_dynamo_table(ma_200, "200_day_ma")
+        update_dynamo_table(ma_10, "10_day_ma")
+        update_dynamo_table(ma_12, "12_day_ma")
+        update_dynamo_table(ma_50, "50_day_ma")
+        update_dynamo_table(ma_200, "200_day_ma")
     return rolling_average
 
 
-def _update_dynamo_table(val: float, item: str) -> None:
+def update_dynamo_table(val: float, item: str) -> None:
     dynamodb.update_item(TableName=table_name, Key={'id': {
         'N': parameter_key}}, ExpressionAttributeNames={"#name": item}, UpdateExpression=f"set #name = :v",
                          ExpressionAttributeValues={':v': {'N': str(val)}})

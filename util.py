@@ -24,11 +24,11 @@ my_url = "https://crypto.jlarrieux.com/metric/data?asset={}"
 
 
 class MovingAverageType(Enum):
-    TEN = auto()
-    TWELVE = auto()
-    FIFTEEN = auto()
-    FIFTY = auto()
-    TWO_HUNDRED = auto()
+    TEN = 10
+    TWELVE = 12
+    FIFTEEN = 15
+    FIFTY = 50
+    TWO_HUNDRED = 200
 
 
 def format_number(value: float, dec=2) -> str:
@@ -89,23 +89,9 @@ def get_average(number: int, my_rolling_average: MyRollingList) -> [int, float]:
 
 
 def get_moving_average_string(ma_type: MovingAverageType) -> str:
-    return f"{str(get_moving_average_number(ma_type))} day"
-
-
-def get_moving_average_number(ma_type: MovingAverageType) -> int:
-    num = 0
-    if ma_type == MovingAverageType.TEN:
-        num = 10
-    elif ma_type == MovingAverageType.TWELVE:
-        num = 12
-    elif ma_type == MovingAverageType.FIFTEEN:
-        num = 15
-    elif ma_type == MovingAverageType.FIFTY:
-        num = 50
-    elif ma_type == MovingAverageType.TWO_HUNDRED:
-        num = 200
-    return num
+    return f"{str(ma_type.value)} day"
 
 
 if __name__ == '__main__':
-    print(get_current_metrics("eth"))
+    # print(get_current_metrics("eth"))
+    print(MovingAverageType.TWELVE.value)
