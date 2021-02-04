@@ -29,13 +29,13 @@ class MyRollingList:
         self._max_length = max
         self._my_deque = deque(maxlen=max)
 
-    def add(self, value: float) -> None:
+    def add(self, value: object) -> None:
         self._my_deque.appendleft(value)
 
     def __str__(self) -> str:
         return f"MyRollingList({list(self._my_deque.__iter__())}, max length={self._max_length}, current size={self.size()})"
 
-    def get_all(self) -> List[float]:
+    def get_all(self) -> List[object]:
         return list(self._my_deque.__iter__())
 
     def clear(self) -> None:
@@ -44,7 +44,7 @@ class MyRollingList:
     def size(self) -> int:
         return len(list(self._my_deque.__iter__()))
 
-    def __getitem__(self, item) -> List[float]:
+    def __getitem__(self, item) -> List[object]:
         return list(self._my_deque)[item]
 
     def remove_last(self):
@@ -53,7 +53,7 @@ class MyRollingList:
             return
         del self._my_deque[0]
 
-    def get_most_recents(self, number) -> [List[float], int]:
+    def get_most_recents(self, number) -> [List[object], object]:
         if number > self.size():
             logger.error(f"Attempting to get {number} of values with current size of {self.size()}")
             return -1
