@@ -97,3 +97,7 @@ def load_from_s3(bucket: str, key: str):
     except Exception as error:
         if isinstance(error, s3_resource.meta.client.exceptions.NoSuchKey):
             return None
+
+
+def get_rolling_average(path: str) -> [MyRollingList, None]:
+    return load_from_s3(path)
