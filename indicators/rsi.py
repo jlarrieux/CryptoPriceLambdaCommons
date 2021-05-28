@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import aws_util
+import backend_commons_aws_util
 from my_rolling_list import  MyRollingList
 
 bucket = "com.jlarrieux.lambda"
@@ -20,4 +20,4 @@ s3_key = "ethereum_rsi_calculations.pkl"
 
 
 def trying():
-   print(aws_util._load_from_s3())
+   print(backend_commons_aws_util._load_from_s3())

@@ -18,9 +18,9 @@ import boto3
 import datetime
 import indicator_util
 import pickle
-from util import MovingAverageType
+from crypto_price_lambda_commons_util import MovingAverageType
 from my_rolling_list import MyRollingList
-import util
+import crypto_price_lambda_commons_util
 
 region = "us-east-1"
 dynamodb = boto3.client('dynamodb', region_name=region)
@@ -52,13 +52,13 @@ def _get_from_dynamo() -> [None, str]:
         TableName=table_name, Key={'id': {'N': parameter_key}})
 
 
-def save_price(val: float, is_time_to_save: bool, key: str, bucket: str) -> MyRollingList:
+def save_price(val: float, is_time_to_save: bool, key: str, bucket: str, initial_size: int = 500) -> MyRollingList:
     update_dynamo_table(val, "last_price")
     round_val = float(Decimal(val).quantize(Decimal("0.01")))
     rolling_average = _load_from_s3(bucket, key)
     if is_time_to_save:
         if rolling_average is None:
-            rolling_average = MyRollingList(500)
+            rolling_average = MyRollingList(initial_size)
         rolling_average.add(round_val)
         save_to_s3(bucket, key, rolling_average)
         ma_10 = indicator_util.calculate_simple_moving_average(rolling_average.get_most_recents(10))

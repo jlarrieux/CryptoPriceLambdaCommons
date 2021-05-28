@@ -16,7 +16,7 @@ import decimal
 import aws_util
 import indicator_util
 import boto3
-import util
+import crypto_price_lambda_commons_util
 import csv
 import pickle
 from my_rolling_list import MyRollingList
@@ -58,7 +58,7 @@ def main() -> None:
     print(my_rolling_list.get_most_recents(14))
 
 def print_averages(my_rolling_list:MyRollingList, value: int) ->None:
-    print(f"The last {value} day averages were: {util.format_money_to_string(indicator_util.calculate_simple_moving_average(my_rolling_list.get_most_recents(value)))}")
+    print(f"The last {value} day averages were: {crypto_price_lambda_commons_util.format_money_to_string(indicator_util.calculate_simple_moving_average(my_rolling_list.get_most_recents(value)))}")
 
 
 def load_and_process() -> None:
