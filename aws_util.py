@@ -99,5 +99,5 @@ def load_from_s3(bucket: str, key: str):
             return None
 
 
-def get_rolling_average(path: str) -> [MyRollingList, None]:
-    return load_from_s3(path)
+def get_rolling_average(bucket: str, key: str) -> [MyRollingList, None]:
+    return load_from_s3(bucket, key)
