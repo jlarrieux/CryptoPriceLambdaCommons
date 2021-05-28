@@ -28,6 +28,7 @@ ssm = boto3.client('ssm', region_name=region)
 table_name = 'eth-price-hourly-nosql-db'
 parameter_key = '0'
 s3_resource = boto3.resource('s3')
+default_bucket = 'com.jlarrieux.lambda'
 
 
 def get_last_price() -> [None, float]:
@@ -86,9 +87,17 @@ def _load_from_s3(bucket: str, s3_key: str) -> [MyRollingList, None]:
     return load_from_s3(bucket, s3_key)
 
 
+def save_to_s3_default_bucket(key: str, obj: object) -> None:
+    save_price(default_bucket, key, obj)
+
+
 def save_to_s3(bucket: str, key: str, obj: object) -> None:
     pickle_byte_obj = pickle.dumps(obj)
     s3_resource.Object(bucket, key).put(Body=pickle_byte_obj)
+
+
+def load_from_s3_default_bucket(key: str):
+    load_from_s3(default_bucket, key)
 
 
 def load_from_s3(bucket: str, key: str):
@@ -99,5 +108,5 @@ def load_from_s3(bucket: str, key: str):
             return None
 
 
-def get_rolling_average(bucket: str, key: str) -> [MyRollingList, None]:
-    return load_from_s3(bucket, key)
+def get_rolling_average(key: str) -> [MyRollingList, None]:
+    return load_from_s3_default_bucket(key)
