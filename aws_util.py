@@ -88,7 +88,7 @@ def _load_from_s3(bucket: str, s3_key: str) -> [MyRollingList, None]:
 
 
 def save_to_s3_default_bucket(key: str, obj: object) -> None:
-    save_price(default_bucket, key, obj)
+    save_to_s3(default_bucket, key, obj)
 
 
 def save_to_s3(bucket: str, key: str, obj: object) -> None:
@@ -97,7 +97,7 @@ def save_to_s3(bucket: str, key: str, obj: object) -> None:
 
 
 def load_from_s3_default_bucket(key: str):
-    load_from_s3(default_bucket, key)
+    return load_from_s3(default_bucket, key)
 
 
 def load_from_s3(bucket: str, key: str):
