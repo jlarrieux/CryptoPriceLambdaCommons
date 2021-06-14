@@ -63,6 +63,18 @@ class MyRollingListTest(unittest.TestCase):
         self.assertEqual([3, 2], my.get_most_recents(2))
         self.assertEqual([3], my.get_most_recents(1))
 
+    def test_adding_list_in_reverse(self):
+        my_list = [1, 2, 3]
+        my = MyRollingList()
+        my.add_all_in_reverse(my_list)
+        self.assertEqual([3, 2, 1], my.get_most_recents(3))
+
+    def test_adding_list_in_order(self):
+        my_list = [1, 2, 3]
+        my = MyRollingList()
+        my.add_all_in_order(my_list)
+        self.assertEqual(my_list, my.get_most_recents(3))
+
 
 if __name__ == '__main__':
     unittest.main()

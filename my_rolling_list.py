@@ -32,6 +32,14 @@ class MyRollingList:
     def add(self, value: object) -> None:
         self._my_deque.appendleft(value)
 
+    def add_all_in_reverse(self, my_list: list) -> None:
+        for value in my_list:
+            self._my_deque.appendleft(value)
+
+    def add_all_in_order(self, my_list: list) -> None:
+        for value in my_list:
+            self._my_deque.append(value)
+
     def __str__(self) -> str:
         return f"MyRollingList({list(self._my_deque.__iter__())}, max length={self._max_length}, current size={self.size()})"
 
