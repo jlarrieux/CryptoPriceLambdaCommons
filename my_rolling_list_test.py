@@ -74,6 +74,7 @@ class MyRollingListTest(unittest.TestCase):
         my = MyRollingList()
         my.add_all_in_order(my_list)
         self.assertEqual(my_list, my.get_most_recents(3))
+        self.assertEqual(my.size(), 3)
 
 
 if __name__ == '__main__':

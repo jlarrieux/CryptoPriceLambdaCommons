@@ -52,6 +52,9 @@ class MyRollingList:
     def size(self) -> int:
         return len(list(self._my_deque.__iter__()))
 
+    def __len__(self):
+        return self.size()
+
     def __getitem__(self, item) -> List[object]:
         return list(self._my_deque)[item]
 
