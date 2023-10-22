@@ -87,3 +87,4 @@ def price(asset):
 
 if __name__ == '__main__':
     main()
+    aws_util.s

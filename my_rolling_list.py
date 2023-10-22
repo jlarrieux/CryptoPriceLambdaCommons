@@ -64,8 +64,18 @@ class MyRollingList:
             return
         del self._my_deque[0]
 
+    def remove_first(self):
+        if self.size() == 0:
+            logger.error(f"Attempting to remove last item from empty!")
+            return
+        del self._my_deque[self.size()-1]
+
     def get_most_recents(self, number) -> [List[object], object]:
         if number > self.size():
             logger.error(f"Attempting to get {number} of values with current size of {self.size()}")
             return -1
         return self[:number]
+
+    def get_at(self, number):
+        return self._my_deque[number]
+

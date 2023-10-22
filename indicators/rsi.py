@@ -17,7 +17,13 @@ from my_rolling_list import  MyRollingList
 
 bucket = "com.jlarrieux.lambda"
 s3_key = "ethereum_rsi_calculations.pkl"
-
+key = "cryptofund2022/union/balance.pkl"
 
 def trying():
-   print(backend_commons_aws_util._load_from_s3())
+   # print(backend_commons_aws_util.load_from_s3("ethereum_daily_closing_prices.pkl"))
+   #  backend_commons_aws_util.save_to_s3(key, 3515.306)
+    print(backend_commons_aws_util.load_from_s3(key))
+
+
+if __name__ == '__main__':
+    trying()
